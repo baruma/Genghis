@@ -36,7 +36,6 @@ class QuestionCell: UITableViewCell {
             questionLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: padding),
             questionLabel.topAnchor.constraint(equalTo: contentView.topAnchor, constant: padding),
             questionLabel.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -padding),
-            
         ])
     }
 

@@ -19,7 +19,14 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         window                      = UIWindow(frame: windowScene.coordinateSpace.bounds)
         window?.windowScene         = windowScene
         window?.rootViewController  = GenTabBarController()
+        configureNavigationBar()
         window?.makeKeyAndVisible()
+        
+    }
+    
+    func configureNavigationBar() {
+        
+        UINavigationBar.appearance().tintColor = UIColor.init(red: 255, green: 235, blue: 238, alpha: 1)
         
     }
 

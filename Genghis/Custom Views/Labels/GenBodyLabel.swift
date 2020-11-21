@@ -34,6 +34,4 @@ class GenBodyLabel: UILabel {
         lineBreakMode                       = .byWordWrapping
         translatesAutoresizingMaskIntoConstraints = false
     }
-
-
 }

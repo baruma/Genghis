@@ -15,9 +15,9 @@ struct Question {
     public var options: [String]
     
     init(id: UUID, title: String, lastUpdated: Date, options: [String]) {
-        self.id = id
-        self.title = title
-        self.lastUpdated = lastUpdated
-        self.options = options
+        self.id             = id
+        self.title          = title
+        self.lastUpdated    = lastUpdated
+        self.options        = options
     }
 }

@@ -26,7 +26,6 @@ class ButtonCell: UITableViewCell {
     override func setSelected(_ selected: Bool, animated: Bool) {
         super.setSelected(selected, animated: animated)
     }
-
     
     private func configure() {
         contentView.addSubview(actionButton)
@@ -43,7 +42,4 @@ class ButtonCell: UITableViewCell {
             actionButton.centerXAnchor.constraint(equalTo: contentView.centerXAnchor)
         ])
     }
-
 }
-
-// How do you make this reusable so you don't have to create a new cell entirely?  Do you need to create a new cell entirely?

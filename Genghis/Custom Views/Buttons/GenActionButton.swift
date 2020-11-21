@@ -36,5 +36,4 @@ class GenActionButton: UIButton {
         self.backgroundColor = backgroundColor
         setTitle(title, for: .normal)
     }
-
 }

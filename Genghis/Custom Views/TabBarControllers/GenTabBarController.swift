@@ -12,7 +12,7 @@ class GenTabBarController: UITabBarController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        UITabBar.appearance().tintColor = .systemRed
+        UITabBar.appearance().tintColor = #colorLiteral(red: 1, green: 0.5411764706, blue: 0.5019607843, alpha: 1)
         
         viewControllers = [createQuestionsNC(), createSettingsNC()]
     }
@@ -33,5 +33,4 @@ class GenTabBarController: UITabBarController {
         
         return UINavigationController(rootViewController: settingsVC)
     }
-
 }
