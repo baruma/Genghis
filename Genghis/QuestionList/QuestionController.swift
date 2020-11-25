@@ -8,7 +8,13 @@
 
 import Foundation
 
+/// Retains data focused, non-UI
+
 class QuestionController {
+//    func operation(operation: CoreDataFetchOperation, didCompleteWithResult: [String : AnyObject]) {
+//        <#code#>
+//    }
+//
     
     let questionRepository = QuestionRepository()
     

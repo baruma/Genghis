@@ -15,6 +15,7 @@
 		960E895D252026CD00562F48 /* SettingsVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 960E895C252026CD00562F48 /* SettingsVC.swift */; };
 		960E895F2520270400562F48 /* QuestionsVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 960E895E2520270400562F48 /* QuestionsVC.swift */; };
 		960E89692521D65700562F48 /* GenBodyLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 960E89682521D65700562F48 /* GenBodyLabel.swift */; };
+		961EECF8256C87CD000CE1C1 /* CoreDataFetchOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 961EECF7256C87CD000CE1C1 /* CoreDataFetchOperation.swift */; };
 		9651523C25224F5200B80052 /* QuestionCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9651523B25224F5200B80052 /* QuestionCell.swift */; };
 		9651524025238EEF00B80052 /* GenActionButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9651523F25238EEF00B80052 /* GenActionButton.swift */; };
 		96515242252605EF00B80052 /* DetailQuestionVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96515241252605EF00B80052 /* DetailQuestionVC.swift */; };
@@ -44,6 +45,7 @@
 		960E895C252026CD00562F48 /* SettingsVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsVC.swift; sourceTree = "<group>"; };
 		960E895E2520270400562F48 /* QuestionsVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuestionsVC.swift; sourceTree = "<group>"; };
 		960E89682521D65700562F48 /* GenBodyLabel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GenBodyLabel.swift; sourceTree = "<group>"; };
+		961EECF7256C87CD000CE1C1 /* CoreDataFetchOperation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreDataFetchOperation.swift; sourceTree = "<group>"; };
 		9651523B25224F5200B80052 /* QuestionCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuestionCell.swift; sourceTree = "<group>"; };
 		9651523F25238EEF00B80052 /* GenActionButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GenActionButton.swift; sourceTree = "<group>"; };
 		96515241252605EF00B80052 /* DetailQuestionVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetailQuestionVC.swift; sourceTree = "<group>"; };
@@ -173,6 +175,14 @@
 			path = Buttons;
 			sourceTree = "<group>";
 		};
+		961EECF6256C8773000CE1C1 /* Core Data Functions */ = {
+			isa = PBXGroup;
+			children = (
+				961EECF7256C87CD000CE1C1 /* CoreDataFetchOperation.swift */,
+			);
+			path = "Core Data Functions";
+			sourceTree = "<group>";
+		};
 		965152432526217800B80052 /* TextFields */ = {
 			isa = PBXGroup;
 			children = (
@@ -194,6 +204,7 @@
 		9665BF4925575CCB00D5F7D3 /* Repositories */ = {
 			isa = PBXGroup;
 			children = (
+				961EECF6256C8773000CE1C1 /* Core Data Functions */,
 				96BC126D2544AB21003F60C8 /* QuestionRepository.swift */,
 			);
 			path = Repositories;
@@ -299,6 +310,7 @@
 				96BC124525424EE9003F60C8 /* Genghis.xcdatamodeld in Sources */,
 				96C2BA90256887EC001014B6 /* DetailQuestionController.swift in Sources */,
 				96515242252605EF00B80052 /* DetailQuestionVC.swift in Sources */,
+				961EECF8256C87CD000CE1C1 /* CoreDataFetchOperation.swift in Sources */,
 				9651524F2526EE2D00B80052 /* OptionCell.swift in Sources */,
 				96515245252621F300B80052 /* TitleTextField.swift in Sources */,
 				960E895B2520261200562F48 /* GenTabBarController.swift in Sources */,

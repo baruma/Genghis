@@ -6,17 +6,22 @@
 //  Copyright © 2020 Liana Haque. All rights reserved.
 //
 
+/// This VIew Controller is assigned for the first screen of the app.
+/// it is responsible for displaying the user's questions, and creating a segue to the DetailQuestionController where the user can create new questions.
+
 import UIKit
 import CoreData
 
+/// The listener is asking the QuestionVC to listen for whether a new or old Question object is being either created or edited (respectively).  listener
 protocol QuestionUpdateListener {
     func onQuestionUpdate (question: Question)
 }
 
+// The QuestionsVC is responsible for listening out for the Question object in order to notify the protocol of what is going on.
 class QuestionsVC: UIViewController, QuestionUpdateListener {
 
     var tableView: UITableView!
-    let searchController = UISearchController(searchResultsController: nil)
+    //let searchController = UISearchController(searchResultsController: nil)
     let createQuestionButton = GenActionButton(backgroundColor: #colorLiteral(red: 1, green: 0.1491314173, blue: 0, alpha: 1), title: "Let Genghis Decide!")
 
     var questions: [Question] = [Question]()
@@ -26,7 +31,7 @@ class QuestionsVC: UIViewController, QuestionUpdateListener {
         super.viewDidLoad()
         
         questions = controller.loadQuestions()
-        navigationItem.searchController = searchController
+        //navigationItem.searchController = searchController
         navigationItem.hidesSearchBarWhenScrolling = true
         navigationController?.navigationBar.prefersLargeTitles = true
         view.backgroundColor = .systemBackground
@@ -84,13 +89,14 @@ class QuestionsVC: UIViewController, QuestionUpdateListener {
              createQuestionButton.heightAnchor.constraint(equalToConstant: 50)
          ])
     }
-    
+    /// Performs segue to DetailQuestionVC .
+    /// so we're wondering, where the heck is the setQuestionUpdateListener even declared.  Why does it take in an argument of listener.
      @objc func pushDetailQuestionVC() {
         let detailQuestionsVC = DetailQuestionVC()
+        /// setQuestionUpdateListener is a public function declared here in order to set the listener to the segue.
         detailQuestionsVC.setQuestionUpdateListener(listener: self)
         navigationController?.pushViewController(detailQuestionsVC, animated: true)
     }
-    
 }
 
 extension QuestionsVC: UITableViewDelegate {}

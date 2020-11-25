@@ -9,7 +9,7 @@
 import UIKit
 import CoreData
 
-
+// keeps track of all listeners the ptotocal you declared
 class DetailQuestionVC: UIViewController, OptionTextChangeListener {
     
     private var controller : DetailQuestionController!
@@ -47,6 +47,7 @@ class DetailQuestionVC: UIViewController, OptionTextChangeListener {
         tableView.reloadData()
     }
     
+    // we create a public function to 
     public func setQuestionUpdateListener(listener: QuestionUpdateListener) {
         controller.questionListener = listener
     }
