@@ -45,9 +45,8 @@ class DetailQuestionController {
             questionToSave = Question(id: generatedID, title: title, lastUpdated: saveDate, options: answerList)
         }
         questionListener?.onQuestionUpdate(question: questionToSave!)
-        questionRepository.save(questionArg: questionToSave!)
+        questionRepository.saveAsync(question: questionToSave!)
     }
-    
     
     func removeEmptyOptions(answers: [String]) -> [String] {
         return answers.filter { !$0.isEmpty }
@@ -66,5 +65,4 @@ class DetailQuestionController {
         }
         return true
     }
-     
 }

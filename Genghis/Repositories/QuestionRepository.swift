@@ -10,11 +10,21 @@ import UIKit
 import CoreData
 import Foundation
 
+protocol QuestionRepositoryResultListener {
+    /// Data Type Success Functions
+    func onFetchAllSuccess(questions: [Question])
+    func onSaveSuccess()
+    func onDeleteSuccess()
+    
+    /// On Failure Function - Applicable to all CRUD scenarios
+    func onFailure(error: NSError)
+}
+
 class QuestionRepository {
     
     // lazy means it's not initialized till the first time it is called
     
-    lazy var context: NSManagedObjectContext = {return persistentContainer.newBackgroundContext()}()
+    lazy var context: NSManagedObjectContext = { return persistentContainer.newBackgroundContext()}()
     // anytime you want to do something async.
     
     // MARK: - Core Data stack
@@ -61,48 +71,56 @@ class QuestionRepository {
             }
         }
     }
-    
-
-    func save(questionArg: Question) {
-        let managedContext = persistentContainer.viewContext
-        let questionEntity = NSEntityDescription.entity(forEntityName: "QuestionEntity", in: managedContext)!
+    /// This is thread agnostic as it takes in a thread
+    func save(question: Question, context: NSManagedObjectContext) {
+//        let managedContext = persistentContainer.viewContext
+        let questionEntity = NSEntityDescription.entity(forEntityName: "QuestionEntity", in: context)!
       
         var questionToSave: NSManagedObject? = nil
-        questionToSave = fetchEntityByID(id: questionArg.id)
+        questionToSave = fetchEntityByID(id: question.id, context: context)
         if(questionToSave == nil) {
-            questionToSave = NSManagedObject(entity: questionEntity, insertInto: managedContext)
+            questionToSave = NSManagedObject(entity: questionEntity, insertInto: context)
         }
         
-        let jsonString = convertStringArrayToJSON(optionString: questionArg.options)
-        questionToSave?.setValue(questionArg.id, forKey: "id")
-        questionToSave?.setValue(questionArg.title, forKeyPath: "title")
-        questionToSave?.setValue(questionArg.lastUpdated, forKey: "lastUpdated")
+        let jsonString = convertStringArrayToJSON(optionString: question.options)
+        questionToSave?.setValue(question.id, forKey: "id")
+        questionToSave?.setValue(question.title, forKeyPath: "title")
+        questionToSave?.setValue(question.lastUpdated, forKey: "lastUpdated")
         questionToSave?.setValue(jsonString, forKey: "options")
         do {
-          try managedContext.save()
+          try context.save()
           print("Core Data Save Succeess")
         } catch let error as NSError {
           print("Could not save. \(error), \(error.userInfo)")
         }
     }
     
-    func fetchByID(id: UUID) -> Question? {
-        let questionResult = fetchEntityByID(id: id)
-        if(questionResult == nil) {
-            return nil
-        } else {
-            return mapToDataModel(entity: questionResult!)
+    /// This defines the background thread
+    func saveAsync(question: Question) {
+        persistentContainer.performBackgroundTask { (context) in
+            self.save(question: question, context: context)
         }
     }
     
-    private func fetchEntityByID(id: UUID) -> QuestionEntity? {
-            let managedContext = persistentContainer.viewContext
+//     keep for now
+//    func fetchByID(id: UUID, context: NSManagedObjectContext) -> Question? {
+//        let questionResult = fetchEntityByID(id: id, context: context)
+//        if (questionResult == nil) {
+//            return nil
+//        } else {
+//            return mapToDataModel(entity: questionResult!)
+//        }
+//    }
+    
+    /// This is thread agnostic because we pass in the context.  The context is aware of what thread this is on.
+    
+    private func fetchEntityByID(id: UUID, context: NSManagedObjectContext) -> QuestionEntity? {
             let questionFetch = NSFetchRequest<NSFetchRequestResult>(entityName: "QuestionEntity")
             
             questionFetch.predicate = NSPredicate(format: "id == %@", argumentArray: [id.uuidString])
             
             do {
-                let questionEntities = try managedContext.fetch(questionFetch) as! [QuestionEntity]
+                let questionEntities = try context.fetch(questionFetch) as! [QuestionEntity]
                 print("FetchbyID is successful")
                 // Error check to ensure something is in the array.  This is an edge case to look out for.
                 if questionEntities.count == 0 {
@@ -118,61 +136,53 @@ class QuestionRepository {
             }
             return nil
     }
-
-    func fetchAll() -> [Question] {
-        
-//        persistentContainer.performBackgroundTask() { (context) in
-//            // Do some core data processing here
-//            do {
-//                try context.fet
-//            } catch {
-//                fatalError("Failure to save context: \(error)")
-//            }
-//        }
-        
-        var questions = [NSManagedObject]()
-        var mappedResult = [Question]()
-
-        let managedContext = persistentContainer.viewContext
-        let fetchRequest = NSFetchRequest<NSManagedObject>(entityName: "QuestionEntity")
-        
-        do {
-            questions = try managedContext.fetch(fetchRequest)
-            for q in questions {
-               var mappedQuestion = mapToDataModel(entity: q as! QuestionEntity)
-                mappedResult.append(mappedQuestion)
-                print(mappedQuestion.id.uuidString)
-            }
-            return mappedResult
-        } catch let error as NSError {
-          print("Could not fetch. \(error), \(error.userInfo)")
-        }
-        
-        return [Question]()
-    }
     
-    func fetchAllAsync() {
-        // all async stuff you never immediately return somthing.
+    func fetchAllAsync(listener: QuestionRepositoryResultListener) {
         persistentContainer.performBackgroundTask { (context) in
-            
+            do {
+                var questions = [NSManagedObject]()
+                var mappedResult = [Question]()
+                let fetchRequest = NSFetchRequest<NSManagedObject>(entityName: "QuestionEntity")
+                questions = try context.fetch(fetchRequest)
+                
+                for q in questions {
+                    let mappedQuestion = self.mapToDataModel(entity: q as! QuestionEntity)
+                    mappedResult.append(mappedQuestion)
+                    print(mappedQuestion.id.uuidString)
+                }
+                DispatchQueue.main.async {
+                    listener.onFetchAllSuccess(questions: mappedResult)
+                }
+            }
+            catch let error as NSError {
+                print("Could not fetch. \(error)")
+                DispatchQueue.main.async {
+                    listener.onFailure(error: error)
+                }
+            }
         }
     }
     
-    func delete(questionArg: Question) {
-        let managedContext = persistentContainer.viewContext
-
-        var question = fetchEntityByID(id: questionArg.id)
-        print("Deleting question " + question!.id!.uuidString)
-        if (question != nil) {
-            managedContext.delete(question!)
+    func deleteAsync(listener: QuestionRepositoryResultListener, question: Question) {
+        persistentContainer.performBackgroundTask { (context) in
             do {
-              try managedContext.save()
-              print("Core Data Save after Delete Succeess")
-            } catch let error {
-              print("Could not save after delete)")
+                var question = self.fetchEntityByID(id: question.id, context: context)
+                print("Deleting question " + question!.id!.uuidString)
+                if (question != nil) {
+                    context.delete(question!)
+                    do {
+                      try context.save()
+                      print("Core Data Save after Delete Succeess")
+                    }
+                }
+            }
+            catch let error as NSError{
+                print("Could not save. \(error)")
+                DispatchQueue.main.async {
+                    // listener type response here.
+                }
             }
         }
-        
     }
     
     func mapToDataModel(entity: QuestionEntity) -> Question {

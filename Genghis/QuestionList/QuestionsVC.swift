@@ -25,12 +25,25 @@ class QuestionsVC: UIViewController, QuestionUpdateListener {
     let createQuestionButton = GenActionButton(backgroundColor: #colorLiteral(red: 1, green: 0.1491314173, blue: 0, alpha: 1), title: "Let Genghis Decide!")
 
     var questions: [Question] = [Question]()
-    let controller = QuestionController()
+    var controller :  QuestionController!
+    
+    init() {
+        super.init(nibName: nil, bundle: nil)
+        controller = QuestionController(view: self)
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        questions = controller.loadQuestions()
+        // How are your questions populated?
+        // The controller calls the loadFunctions in the QuestionController.  The onSUccess part calls in the [Question] in the loadQuestions.
+        // The listener is the transporter of the result, it is moving around your data, being a middle man.
+        // 
+        controller.loadQuestions()
         //navigationItem.searchController = searchController
         navigationItem.hidesSearchBarWhenScrolling = true
         navigationController?.navigationBar.prefersLargeTitles = true
@@ -43,6 +56,11 @@ class QuestionsVC: UIViewController, QuestionUpdateListener {
        // self.tabBarController?.tabBar.isHidden = true
     }
     
+    public func updateView(questions: [Question]) {
+        self.questions = questions
+        tableView.reloadData()
+    }
+    
     func onQuestionUpdate (question: Question) {
         var hasBeenFound = isExistingQuestion(question: question)
         if !hasBeenFound {
@@ -50,7 +68,7 @@ class QuestionsVC: UIViewController, QuestionUpdateListener {
         }
         tableView.reloadData()
     }
-    
+
     func isExistingQuestion(question: Question) -> Bool {
         var hasBeenFound = false
         
@@ -112,13 +130,9 @@ extension QuestionsVC: UITableViewDataSource {
         return cell
     }
     
-    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        return UITableView.automaticDimension
-    }
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat { return UITableView.automaticDimension }
     
-    func tableView(_ tableView: UITableView, estimatedHeightForRowAt indexPath: IndexPath) -> CGFloat {
-        return UITableView.automaticDimension
-    }
+    func tableView(_ tableView: UITableView, estimatedHeightForRowAt indexPath: IndexPath) -> CGFloat { return UITableView.automaticDimension }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let selectedQuestion = questions[indexPath.row]
@@ -135,5 +149,4 @@ extension QuestionsVC: UITableViewDataSource {
             tableView.deleteRows(at: [indexPath], with: .fade)
         }
     }
-    
 }

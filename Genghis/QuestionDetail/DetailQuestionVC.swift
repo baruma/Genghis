@@ -47,7 +47,6 @@ class DetailQuestionVC: UIViewController, OptionTextChangeListener {
         tableView.reloadData()
     }
     
-    // we create a public function to 
     public func setQuestionUpdateListener(listener: QuestionUpdateListener) {
         controller.questionListener = listener
     }
